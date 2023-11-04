@@ -1,7 +1,9 @@
 import java.util.Scanner;
 
 public class gameofthrowns {
+	static int child = 0;
 	public static void main(String[] args) {
+
 		Scanner input = new Scanner(System.in);
 		int n = input.nextInt();
 		int k = input.nextInt();
@@ -9,63 +11,49 @@ public class gameofthrowns {
 		
 		int[] pList = new int[n];
 		int p;
-		int child = 0; //starts at child 0
+		//int child = 0; //starts at child 0
 		int index = 0;
 		String s = "";
-		for(int i = 0; i < k; i++) {
+		for(int i = 0; i < k; i++) {//read in k
 			if(input.hasNextInt()) {
 				p = input.nextInt();
-				pList[index] = p;
-				p = calcP(p, n);
-				child = addP(p, n, child);
-			} else {
+				pList[index] = -p;
+				index++;
+				throwBall(p, n);
+				System.out.println("Ball Thrown to Child: " + child);
+			} else if (input.hasNext()){
 				s = input.next();
-				//Undo
+				//System.out.println("S: " + s);// just checking the value of s
 				int u = input.nextInt();
-				int ogIndex = index;
 				for(int j = 0; j < u; j++) {
-					p = calcP((-1 * pList[index]),n);
-					child = addP(p, n ,child);
+					throwBall(pList[index-1], n);
+					System.out.println("Ball Thrown BACK to Child: " + child);
 					index--;
 				}
-				index = ogIndex;
+				//System.out.println("Done undoing");
 			}
+			
 		}
 		System.out.println(child);
+		input.close();
+		
 	}
 	
-	public static int calcP(int p, int n) {
-		if(p > 0) {
-			if(p > n) {
-				return p - (n); //8--> 3
-			} else {
-				return p;
-			}
-		}else {
-			if(p < -n) {
-				return p + (n); //-8 --> -3
-			} else {
-				return p;
-			}
-		}
-	}
-	
-	public static int addP(int p, int n, int child) {
-		int current;
-		if(p > 0) {
-			current = p + child;
-			while(current > n) {
-				current -= n;
-			}
-			while(current < -n) {
-				current += n;
-			}
-		} else if(p == 0 || p % n == 0) {
-			current = child;
+	public static void throwBall(int p, int n) {
+		if(p % n == 0) {
+			//literally do nothing
 		} else {
-			System.out.println("Yikes");
-			current = 0;
+			child += p;
+			while(child > n) {
+				child -= n;
+			}
+			while(child < 0) {
+				child += n;
+			}
 		}
-		return current;
+		
+		//System.out.println("Child " + child + " catches the ball");
 	}
+	
+	
 }
